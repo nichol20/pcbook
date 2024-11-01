@@ -43,8 +43,8 @@ func NewGPU() *pb.GPU {
 	brand := randomGPUBrand()
 	name := randomGPUName(brand)
 
-	minGhz := randomFloat64(2.0, 3.5)
-	maxGhz := randomFloat64(minGhz, 5)
+	minGhz := randomFloat64(1.0, 1.5)
+	maxGhz := randomFloat64(minGhz, 2.0)
 
 	memory := &pb.Memory{
 		Value: uint64(randomInt(2, 6)),

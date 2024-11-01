@@ -7,8 +7,13 @@ import (
 
 // ProtobufToJSON converts protocol buffer message to JSON string
 func ProtobufToJSON(message proto.Message) string {
-
-	return protojson.Format(message)
+	opts := protojson.MarshalOptions{
+		Indent:          "  ",  // Indent JSON output with two spaces
+		EmitUnpopulated: true,  // Include default values for fields
+		UseEnumNumbers:  false, // Use names instead of numbers for enum values
+		UseProtoNames:   true,  // Use protobuf field names as JSON keys
+	}
+	return opts.Format(message)
 }
 
 // JSONToProtobufMessage converts JSON string to protocol buffer message

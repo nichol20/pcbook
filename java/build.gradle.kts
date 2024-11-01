@@ -15,6 +15,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
     implementation("com.google.protobuf:protobuf-java:4.28.3")
+    implementation("com.google.protobuf:protobuf-java-util:3.25.5")
     // https://mvnrepository.com/artifact/io.grpc/grpc-all
     implementation("io.grpc:grpc-all:1.68.1")
 }

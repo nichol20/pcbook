@@ -11,13 +11,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("junit:junit:4.13.2")
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
     implementation("com.google.protobuf:protobuf-java:4.28.3")
     implementation("com.google.protobuf:protobuf-java-util:3.25.5")
     // https://mvnrepository.com/artifact/io.grpc/grpc-all
     implementation("io.grpc:grpc-all:1.68.1")
+    // https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
 }
 
 sourceSets {
@@ -47,9 +48,4 @@ protobuf {
             }
         }
     }
-}
-
-
-tasks.test {
-    useJUnitPlatform()
 }

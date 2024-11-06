@@ -19,7 +19,7 @@ func TestClientCreateLaptop(t *testing.T) {
 	t.Parallel()
 
 	laptopStore := service.NewInMemoryLaptopStore()
-	serverAddress := startTestLaptopServer(t, laptopStore)
+	serverAddress := startTestLaptopServer(t, laptopStore, nil)
 	laptopClient := newTestLaptopClient(t, serverAddress)
 
 	laptop := sample.NewLaptop()
@@ -87,7 +87,7 @@ func TestClientSearchLaptop(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	serverAddress := startTestLaptopServer(t, laptopStore)
+	serverAddress := startTestLaptopServer(t, laptopStore, nil)
 	laptopClient := newTestLaptopClient(t, serverAddress)
 
 	req := &pb.SearchLaptopRequest{Filter: filter}
@@ -110,8 +110,8 @@ func TestClientSearchLaptop(t *testing.T) {
 	require.Equal(t, len(expectedIDs), found)
 }
 
-func startTestLaptopServer(t *testing.T, laptopStore service.LaptopStore) string {
-	laptopServer := service.NewLaptopServer(laptopStore)
+func startTestLaptopServer(t *testing.T, laptopStore service.LaptopStore, imageStore service.ImageStore) string {
+	laptopServer := service.NewLaptopServer(laptopStore, imageStore)
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterLaptopServiceServer(grpcServer, laptopServer)

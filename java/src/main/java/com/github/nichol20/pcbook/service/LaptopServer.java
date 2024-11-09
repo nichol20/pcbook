@@ -2,6 +2,7 @@ package com.github.nichol20.pcbook.service;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.protobuf.services.ProtoReflectionService;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,10 @@ public class LaptopServer {
     ) {
         this.port = port;
         LaptopService laptopService = new LaptopService(laptopStore, imageStore, ratingStore);
-        server = serverBuilder.addService(laptopService).build();
+        server = serverBuilder
+                .addService(laptopService)
+                .addService(ProtoReflectionService.newInstance())
+                .build();
     }
 
     public void start() throws IOException {

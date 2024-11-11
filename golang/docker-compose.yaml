@@ -1,0 +1,14 @@
+services:
+  nginx:
+    image: nginx:1.25.4-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./cert/server-cert.pem:/etc/nginx/cert/server-cert.pem:ro
+      - ./cert/server-key.pem:/etc/nginx/cert/server-key.pem:ro
+      - ./cert/ca-cert.pem:/etc/nginx/cert/ca-cert.pem:ro
+    ports:
+      - 8080:8080
+      - 80:80
+      - 443:443
+    extra_hosts:
+      - host.docker.internal:host-gateway

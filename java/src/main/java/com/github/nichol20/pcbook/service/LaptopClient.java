@@ -8,12 +8,14 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
+import io.netty.handler.ssl.SslContext;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import javax.net.ssl.SSLException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
@@ -36,6 +38,16 @@ public class LaptopClient {
         blockingStub = LaptopServiceGrpc.newBlockingStub(channel);
         asyncStub = LaptopServiceGrpc.newStub(channel);
     }
+
+    public LaptopClient(String host, int port, SslContext sslContext) {
+        channel = NettyChannelBuilder.forAddress(host, port)
+                .sslContext(sslContext)
+                .build();
+
+        blockingStub = LaptopServiceGrpc.newBlockingStub(channel);
+        asyncStub = LaptopServiceGrpc.newStub(channel);
+    }
+
 
     public void shutdown() throws InterruptedException {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
@@ -256,12 +268,23 @@ public class LaptopClient {
             }
 
             client.rateLaptop(laptopIDs, scores);
-            break;
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        LaptopClient client = new LaptopClient("0.0.0.0", 8080);
+    public static SslContext loadTLSCredentials() throws SSLException {
+        File serverCACertFile = new File("cert/ca-cert.pem");
+        File clientCertFile = new File("cert/client-cert.pem");
+        File clientKeyFile = new File("cert/client-key.pem");
+
+        return GrpcSslContexts.forClient()
+                .keyManager(clientCertFile, clientKeyFile)
+                .trustManager(serverCACertFile)
+                .build();
+    }
+
+    public static void main(String[] args) throws InterruptedException, SSLException {
+        SslContext sslContext = LaptopClient.loadTLSCredentials();
+        LaptopClient client = new LaptopClient("0.0.0.0", 8080, sslContext);
         Generator generator = new Generator();
 
         try {
@@ -270,4 +293,5 @@ public class LaptopClient {
             client.shutdown();
         }
     }
+
 }
